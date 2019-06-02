@@ -5,8 +5,6 @@ import javafx.scene.image.ImageView;
 
 public class GameObject extends ImageView implements Movable{
 	private ImageView object;
-	private double coordenateX;
-	private double coordenateY;
 	private int width;
 	private int height;
 	private boolean alive;
@@ -14,13 +12,11 @@ public class GameObject extends ImageView implements Movable{
 	private double velocity;
 	
 	
-	public GameObject(ImageView skin, double x, double y, int width, int height, boolean alive, int lives, double velocity) {
+	public GameObject(ImageView skin, int width, int height, boolean alive, int lives, double velocity) {
 		object=skin;
-		coordenateX = x;
-		coordenateY = y;
 		this.width = width;
 		this.height = height;
-		object.setViewport(new Rectangle2D(coordenateX, coordenateY, width, height));
+		object.setViewport(new Rectangle2D(0, 0, width, height));
 		this.alive=alive;
 		this.lives=lives;
 		this.velocity=velocity;
@@ -61,27 +57,6 @@ public class GameObject extends ImageView implements Movable{
 	public void setObject(ImageView object) {
 		this.object = object;
 	}
-
-
-	public double getCoordenateX() {
-		return coordenateX;
-	}
-
-
-	public void setCoordenateX(double coordenateX) {
-		this.coordenateX = coordenateX;
-	}
-
-
-	public double getCoordenateY() {
-		return coordenateY;
-	}
-
-
-	public void setCoordenateY(double coordenateY) {
-		this.coordenateY = coordenateY;
-	}
-
 
 	public int getWidth() {
 		return width;
