@@ -78,7 +78,7 @@ public class MenuSceneGUI {
 		miniGame.setOnMouseExited(e -> miniGame.setTextFill(Color.LIGHTGRAY));
 		exit.setOnMouseEntered(e -> exit.setTextFill(Color.YELLOW));
 		exit.setOnMouseExited(e -> exit.setTextFill(Color.LIGHTGRAY));
-		SoundThread soundtrack = new SoundThread("media/soundtrack/World-of-Automatons_Looping.mp3");
+		SoundThread soundtrack = new SoundThread("media/soundtrack/World-of-Automatons_Looping.mp3", false);
 		soundtrack.start();
 		newGame.setOnMouseClicked(e -> Notify("Not Available yet, try with minigame!"));
 		miniGame.setOnMouseClicked(e -> {

@@ -1,22 +1,23 @@
 package model;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class GameObject extends ImageView implements Movable{
-	private ImageView object;
+public class GameObject extends ImageView implements Movable, Comparable<GameObject>{
 	private int width;
 	private int height;
 	private boolean alive;
 	private int lives;
 	private double velocity;
+	private GameObject left;
+	private GameObject right;
 	
-	
-	public GameObject(ImageView skin, int width, int height, boolean alive, int lives, double velocity) {
-		object=skin;
+	public GameObject(Image skin, int width, int height, boolean alive, int lives, double velocity) {
+		setImage(skin);
 		this.width = width;
 		this.height = height;
-		object.setViewport(new Rectangle2D(0, 0, width, height));
+		setViewport(new Rectangle2D(0, 0, width, height));
 		this.alive=alive;
 		this.lives=lives;
 		this.velocity=velocity;
@@ -48,14 +49,6 @@ public class GameObject extends ImageView implements Movable{
 	public void moveLeft() {
 		 setTranslateX(getTranslateX() - velocity);
 		
-	}
-	public ImageView getObject() {
-		return object;
-	}
-
-
-	public void setObject(ImageView object) {
-		this.object = object;
 	}
 
 	public int getWidth() {
@@ -105,5 +98,35 @@ public class GameObject extends ImageView implements Movable{
 
 	public void setVelocity(double velocity) {
 		this.velocity = velocity;
+	}
+
+
+	public GameObject getLeft() {
+		return left;
+	}
+
+
+	public void setLeft(GameObject left) {
+		this.left = left;
+	}
+
+
+	public GameObject getRight() {
+		return right;
+	}
+
+
+	public void setRight(GameObject right) {
+		this.right = right;
+	}
+
+	@Override
+	public int compareTo(GameObject o) {
+		
+		if(this.getVelocity()<((GameObject)o).getVelocity()) {
+			return 1;
+		}else {
+			return 0;
+		}
 	}
 }

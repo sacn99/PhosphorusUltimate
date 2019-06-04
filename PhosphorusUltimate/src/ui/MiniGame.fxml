@@ -7,12 +7,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="principalContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MiniGameGUI">
+
+<BorderPane fx:id="principalContainer" prefHeight="362.0" prefWidth="649.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MiniGameGUI">
    <center>
-      <Pane fx:id="gamePane" onKeyPressed="#move" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <Pane fx:id="gamePane" onKeyPressed="#move" prefHeight="308.0" prefWidth="537.0" />
    </center>
    <right>
-      <VBox fx:id="informationBox" prefHeight="400.0" prefWidth="112.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="informationBox" prefHeight="308.0" prefWidth="112.0" BorderPane.alignment="CENTER">
          <children>
             <HBox fx:id="livesHBox" prefHeight="19.0" prefWidth="112.0">
                <children>
@@ -29,6 +30,7 @@
             <Button fx:id="saveGame" mnemonicParsing="false" onAction="#saveGame" text="Save Game" />
             <Button fx:id="instructions" mnemonicParsing="false" onAction="#showInstructions" text="Instructions" />
             <Button fx:id="backToMenu" mnemonicParsing="false" onAction="#goBack" text="Back to Menu" />
-         </children></VBox>
+         </children>
+      </VBox>
    </right>
 </BorderPane>

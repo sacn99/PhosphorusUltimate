@@ -4,13 +4,16 @@ import java.io.File;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 public class SoundThread extends Thread{
 	private String url;
 	private Media file;
 	private MediaPlayer loader;
-	public SoundThread(String url) {
+	private boolean soundEffect;
+	public SoundThread(String url, boolean soundEffect) {
 		this.url=url;
+		this.soundEffect=soundEffect;
 	}
 	@Override
 	public void run() {
@@ -18,10 +21,18 @@ public class SoundThread extends Thread{
 		file = new Media(new File(url).toURI().toString());
 		loader = new MediaPlayer(file);
 		loader.setVolume(1);
-		loader.setAutoPlay(true);
-		loader.setStopTime(file.getDuration());
-		loader.play();
-		loader.setOnRepeat(this);
+		
+		if(soundEffect) {
+			loader.play();
+			sleep(2000);
+			finiquito();
+		}else {
+			loader.setAutoPlay(true);
+			loader.setStopTime(file.getDuration());
+			loader.setOnRepeat(this);
+			loader.play();
+		}
+
 		} catch(Exception e) {
 			e.getStackTrace();
 		}

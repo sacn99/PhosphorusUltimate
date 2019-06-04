@@ -24,7 +24,7 @@ public class Main extends Application {
     	stage.setTitle("PHOSPHORUS");
     	stage.setScene(new Scene(root));
     	stage.setFullScreen(true);
-    	SoundThread soundtrack = new SoundThread("media/soundtrack/Security-Breach_Looping.mp3");
+    	SoundThread soundtrack = new SoundThread("media/soundtrack/Security-Breach_Looping.mp3", false);
 		soundtrack.start();
     	stage.getScene().setOnKeyPressed(e-> {
     		if(stage.getScene().getRoot()==root) {

@@ -1,9 +1,15 @@
 package ui;
 
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import Exception.NoEnemiesException;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,14 +32,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import model.*;
+import thread.SoundThread;
 
 public class MiniGameGUI {
-
+	private GameObject root;
 	private SpaceShip player;
 	private List<Enemy> enemies;
+	private List<Bullet> shoots;
 	private AnimationTimer timer;
+	private double time = 0;
+	private Bonus first;
+	private List<GameObject> objectList;
+	
 	
 	@FXML
     private BorderPane principalContainer;
@@ -85,15 +98,24 @@ public class MiniGameGUI {
             break;
         case D:
         	player.moveRight();
-        case SPACE:
-            //shoot(player);
-        	System.out.println("el man disparo");
+        	break;
+        case F:
+            shoot();
             break;
         default:
         	break;
     	}
     }
-    @FXML
+    
+    public void shoot() {
+    	Bullet shoot = new Bullet(new Image("File:media/enviroment/hope.png", 50, 50, true, false), 40, 40, true, 1, 8);
+    	gamePane.getChildren().add(shoot);
+    	shoot.setY(player.getTranslateY()+40);
+    	shoot.setX(player.getTranslateX()+player.getWidth());
+    	shoots.add(shoot);
+    }
+    
+	@FXML
     void goBack(ActionEvent event) throws IOException {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("menuScene.fxml"));
     	Parent root = loader.load();
@@ -104,7 +126,7 @@ public class MiniGameGUI {
 
     @FXML
     void saveGame(ActionEvent event) {
-
+    	
     }
 
     @FXML
@@ -156,30 +178,150 @@ public class MiniGameGUI {
     	backToMenu.setOnMouseEntered(e -> backToMenu.setTextFill(Color.YELLOW));
     	backToMenu.setOnMouseExited(e -> backToMenu.setTextFill(Color.WHITE));
     	
-    	//Game
+    	shoots = new ArrayList<Bullet>();
+    	enemies = new ArrayList<Enemy>();
     	
+    	timer = new AnimationTimer() {
+			
+			@Override
+			public void handle(long now) {
+				upload();
+				
+			}
+		};
+		timer.start();
+		try {
+			loadEnemies("data/Enemies.txt");
+		} catch (NumberFormatException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     
-    public void NodesAlignment() {
+    private void loadEnemies(String path) throws NumberFormatException, IOException {
+    	BufferedReader br = new BufferedReader(new FileReader(path));
+        String line;
+         
+        while ((line = br.readLine()) != null) {
+            String info[] = line.split(",");
+            //Enemy actual = new Enemy(new Image(info[1]), Integer.parseInt(info[2]), Integer.parseInt(info[2]), Boolean.parseBoolean(info[4]), Integer.parseInt(info[5]), Double.parseDouble(info[6]));
+            //enemies.add(actual);
+        }
+     
+	}
+
+	protected void upload() {
+		
+		time+=0.016;
+		
+		shoots.forEach(s->{
+			s.moveRight();
+			SoundThread shootEffect =new SoundThread("media/soundtrack/shoot.wav", true);
+			shootEffect.start();
+		});
+		
+		/*enemies.forEach(e->{
+			gamePane.getChildren().add(e);
+			e.moveLeft();
+			SoundThread fallEffect = new SoundThread("", true);
+			fallEffect.start();
+		});
+		
+		if(time%1==0 && time > 10) {
+			Bonus position = new Bonus(new Image("File:media/enviroment/spaceShip.png", 20, 20, true, false), 30, 30, true, 1, 6); 
+			addBonus(position, first);
+			Random r = new Random();
+			double y = r.nextInt((int) (principalContainer.getHeight()/2));
+			gamePane.getChildren().add(position);
+			position.setY(y);
+			position.setX(principalContainer.getWidth());
+			position.moveLeft();
+		}*/
+		int counter1 = 0;
+		if(gamePane.getChildren().size()!=counter1) {
+			//generateTree(root, 0);
+		}	
+		
+	}
+
+	private void addBonus(Bonus b, Bonus current ) {
+		if(current == null) {
+			current = b;
+			current.setNext(b);
+			current.setPrev(b);
+		}else {
+			current.getPrev().setNext(b);
+			current.getPrev().getNext().setNext(current);
+			current.getPrev().getNext().setPrev(current.getPrev());
+			current.setPrev(b);
+		}
+		
+	}
+	
+	private void generateTree(GameObject current, int position){
+		
+		if(root==null) {
+			root=player;
+			objectList.add(root);
+			generateTree(root, 0);
+		}if(!objectList.containsAll(enemies)){
+			if(!objectList.contains(enemies.get(position))) {
+				if(current.compareTo(enemies.get(position))==1) {
+					objectList.add(enemies.get(position));
+					if(current.getRight()==null) {
+						current.setRight(enemies.get(position));
+						generateTree(root, position++);
+					}else {
+						generateTree(current.getRight(),position);
+					}
+				}else {
+					objectList.add(enemies.get(position));
+					if(current.getLeft()==null) {
+						current.setLeft(enemies.get(position));
+						generateTree(root, position++);
+					}else {
+						generateTree(current.getLeft(), position);
+					}
+				}
+			}
+		}else if(!objectList.containsAll(shoots)) {
+			if(!objectList.contains(shoots.get(position))) {
+				if(current.compareTo(shoots.get(position))==1) {
+					objectList.add(shoots.get(position));
+					if(current.getRight()==null) {
+						current.setRight(shoots.get(position));
+						generateTree(root, position++);
+					}else {
+						generateTree(current.getRight(),position);
+					}
+				}else {
+					objectList.add(shoots.get(position));
+					if(current.getLeft()==null) {
+						current.setLeft(shoots.get(position));
+						generateTree(root, position++);
+					}else {
+						generateTree(current.getLeft(), position);
+					}
+				}
+			}
+		}
+		if(objectList.containsAll(enemies)&& objectList.containsAll(shoots)) {
+			generateTree(root,0);
+		}
+	}
+
+	public void NodesAlignment() {
     	informationBox.setPrefWidth(350);
     	Image img = new Image("File:media/enviroment/back.jpg", gamePane.getWidth(), gamePane.getHeight(),true,true);
 		BackgroundImage staticImg = new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, null);
 		gamePane.setBackground(new Background(staticImg));
 		
-		alignSpaceShip();
-    }
-	private void alignSpaceShip() {
-		ImageView imv = new ImageView(new Image(getClass().getResourceAsStream("/media/enviroment/fullOfStars2.jpg")));
-		Rectangle2D rec = new Rectangle2D(gamePane.getWidth()/2, gamePane.getHeight()/2, 50,50);
-		imv.setViewport(rec);
+		player = new SpaceShip(new Image("File:media/enviroment/spaceShip.png", 100, 100, true, false), 100, 100, true, 3, 10);
 		
-		gamePane.getChildren().add(imv);
-		imv.setLayoutX(gamePane.getWidth()/2);
-		imv.setLayoutY(gamePane.getHeight()/2);
-		/*
-		player = new SpaceShip(new ImageView(new Image("File:media/enviroment/spaceShip.png")), 50, 50, true, 3, 5);
-    	gamePane.getChildren().add(player);
-    	player.setLayoutX(gamePane.getWidth()/2);
-    	player.setLayoutY(gamePane.getHeight()/2);*/
-	}
+		principalContainer.getChildren().add(player);
+		player.setTranslateY(principalContainer.getHeight()/2-player.getHeight()/2);
+		
+		player.getScene().setOnKeyPressed(e -> move(e));
+		
+    }
 }
